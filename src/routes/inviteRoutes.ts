@@ -7,8 +7,8 @@ export default function inviteRoutes(
 ): Router {
   const router = Router();
 
-  router.get("/:event_id", authMiddleware, controller.getAllAcceptByenventID.bind(controller));  // router.get("/:id", controller.getInviteById.bind(controller));
-  router.post("/", controller.createInvite.bind(controller));
+  router.get("/events/:event_id", authMiddleware, controller.getAllAcceptByenventID.bind(controller));  // router.get("/:id", controller.getInviteById.bind(controller));
+  router.post("/",authMiddleware, controller.createInvite.bind(controller));
   // router.put("/:id", controller.updateInvite.bind(controller));
   // router.delete("/:id", controller.deleteInvite.bind(controller));
 

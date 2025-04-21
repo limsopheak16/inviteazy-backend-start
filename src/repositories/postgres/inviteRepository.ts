@@ -24,48 +24,25 @@ export class PostgresInviteRepository implements InviteRepository {
       [id]
     ).then((result) => result.rows[0] || null);
   }
+  async findinvitebyuserID(
+    userID: any
+  ): Promise<Invite[] | null> {
+    return queryWithLogging(
+      this.pool,
+      "SELECT id, event_id, user_id, status, qr_code FROM public.invitation WHERE user_id = $1",
+      [userID]
+    ).then((result) => result.rows || null);
+  }
 
   async create(invite: Omit<Invite, "id">): Promise<Invite> {
     const client = await this.pool.connect();
     try {
-      await client.query('BEGIN');
-  
-      // Step 1: Check the user's role
-      const roleRes = await client.query(
-        "SELECT role FROM public.users WHERE id = $1",
-        [invite.user_id]
-      );
-  
-      if (roleRes.rowCount === 0) {
-        throw new Error("User not found");
-      }
-  
-      const role = roleRes.rows[0].role;
-  
-      // Step 2: Check invitation count if role is 'user'
-      if (role === 'user') {
-        const countRes = await client.query(
-          "SELECT COUNT(*) FROM public.invitation WHERE user_id = $1 AND event_id = $2",
-          [invite.user_id, invite.event_id]
-        );
-  
-        const count = parseInt(countRes.rows[0].count, 10);
-  
-        if (count >= 50) {
-          throw new Error("User has reached the invitation limit (50) for this event.");
-        }
-      }
-  
-      // Step 3: Proceed with insert
       const insertRes = await client.query(
         "INSERT INTO public.invitation (event_id, user_id, status, qr_code) VALUES ($1, $2, $3, $4) RETURNING id, event_id, user_id, status, qr_code",
         [invite.event_id, invite.user_id, invite.status, invite.qr_code]
       );
-  
-      await client.query('COMMIT');
       return insertRes.rows[0];
     } catch (err) {
-      await client.query('ROLLBACK');
       throw err;
     } finally {
       client.release();

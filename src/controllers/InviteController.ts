@@ -1,11 +1,18 @@
 import { NextFunction, Request, Response } from "express";
 import { Invite, InviteService } from "../interfaces/Inviteinterface";
+import { IUser, IUserService } from "../interfaces/userInterface";
+
+interface AuthRequest extends Request {
+  userId?: any;
+}
 
 export class InviteController{
     private inviteService: InviteService;
+    private userService: IUserService;
     
-      constructor(inviteService: InviteService) {
+      constructor(inviteService: InviteService, userService: IUserService) {
         this.inviteService = inviteService;
+        this.userService = userService;
       }
 
       async getAllAcceptByenventID(req: Request, res: Response, next: NextFunction) {
@@ -28,18 +35,26 @@ export class InviteController{
     //       next(error);
     //     }
     //   }
-    async createInvite(req: Request, res: Response, next: NextFunction) {
+    async createInvite(req: AuthRequest, res: Response, next: NextFunction) {
         try {
-          const { event_id, user_id, qr_code }: Omit<Invite, "id"> = req.body;
+          console.log("req.userId", req.userId);
+          const { event_id, qr_code }: Omit<Invite, "id"> = req.body;
+          const result = await this.userService.getUserById(req.userId);
+          const user = await this.inviteService.findinvitebyuserID(req.userId);
+          if((user?.length ?? 0) > 50 && result.role !== "admin"){
+            throw new Error("You have reached the maximum limit of 50 invites.");
+        }else{
           const newInvite = await this.inviteService.createInvite({
             event_id,
-            user_id,
+            user_id: req.userId,
             status: "pending",
             qr_code,
-          });
+          })
           res
-            .status(201)
-            .json({ message: "A new invite was created.", data: newInvite });
+          .status(201)
+          .json({ message: "A new invite was created.", data: newInvite ,user, result});
+        }
+         
         } catch (err) {
           console.log(err);
           next(err);
