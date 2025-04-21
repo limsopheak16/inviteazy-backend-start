@@ -11,7 +11,7 @@ import { PostgresUserRepository } from "./repositories/postgres/userRepository";
 import { loggingMiddleware } from "./middlewares/loggingMiddleware";
 import { PostgresInviteRepository } from "./repositories/postgres/inviteRepository";
 import inviteRoutes from "./routes/inviteRoutes";
-import { Invite,InviteRepository,InviteService } from "./interfaces/Inviteinterface";
+// import { Invite,InviteRepository,InviteService } from "./interfaces/Inviteinterface";
 import { inviteService } from "./services/inviteService";
 import { InviteController } from "./controllers/InviteController";
 
@@ -31,12 +31,12 @@ const inviteRepository = new PostgresInviteRepository(pgPool);
 
 // Services
 const userService = new UserService(userRepository);
-const InviteService = new inviteService(inviteRepository);
+const innviteService = new inviteService(inviteRepository, userRepository);
 
 // Controllers
 const userController = new UserController(userService);
 const authController = new AuthController(userService);
-const inviteController = new InviteController(InviteService);
+const inviteController = new InviteController(innviteService, userService);
 
 // Middlewares
 app.use(express.json());
