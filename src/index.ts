@@ -8,8 +8,10 @@ import { AuthController } from "./controllers/authController";
 import authRoutes from "./routes/authRoutes";
 import { connectPostgresDb } from "./config/postgresdb/db";
 // import { EventPostgresUserRepository } from "./repositories/postgres/userRepository";
+// import { EventRepository } from "./interfaces/EventInterface";
 import { loggingMiddleware } from "./middlewares/loggingMiddleware";
 import { PostgresInviteRepository } from "./repositories/postgres/inviteRepository";
+import { PostgresUserRepository } from "./repositories/postgres/userRepository";
 import inviteRoutes from "./routes/inviteRoutes";
 import { Invite,InviteRepository,InviteService } from "./interfaces/Inviteinterface";
 import { inviteService } from "./services/inviteService";
@@ -28,8 +30,8 @@ const app = express();
 const port = 3000;
 
 // Switch connection to database
-connectMongoDB();
-// const pgPool = connectPostgresDb();
+// connectMongoDB();
+const pgPool = connectPostgresDb();
 
 // Repositories
 // const userRepository = new MongoUserRepository();
@@ -45,8 +47,8 @@ const userController = new UserController(userService);
 const authController = new AuthController(userService);
 const inviteController = new InviteController(InviteService);
 
-const eventService = new EventServiceImpl(eventRepository);
-const eventController = new EventController(eventService);
+// const eventService = new EventServiceImpl(eventRepository);
+// const eventController = new EventController(eventService);
 
 // Middlewares
 app.use(express.json());
@@ -56,7 +58,7 @@ app.use(loggingMiddleware);
 app.use("/api/users", userRoutes(userController));
 app.use("/api/auth", authRoutes(authController));
 app.use("/api/invites", inviteRoutes(inviteController));
-app.use("/api/events", EventsRoutes(eventController));
+// app.use("/api/events", EventsRoutes(eventController));
 
 // Handle Errors
 app.use(errorMiddleware);
