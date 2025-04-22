@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { logger } from "../services/loggerService";
-import { sanitizeRequestData } from "../utils/sanitizeRequestData";
+import { sanitizeRequestData, maskResponseBody} from "../utils/sanitizeRequestData";
 
 export function loggingMiddleware(
   req: Request,
@@ -9,20 +9,23 @@ export function loggingMiddleware(
 ) {
   const startTime = Date.now();
 
-  const requestLog = {
-    method: req.method,
-    url: req.url,
-    headers: req.headers,
-    body: req.body,
-  };
-  logger.info("Request received", requestLog);
+  // Sanitize the request data
+  const sanitizedRequestLog = sanitizeRequestData(req);
+
+  logger.info("Request received", sanitizedRequestLog);
 
   const originalSend = res.send;
   res.send = function (body) {
     const duration = Date.now() - startTime;
+
+    // Mask all fields in the response body
+    const maskedBody = maskResponseBody(
+      typeof body === "string" ? JSON.parse(body) : body
+    );
+
     const responseLog = {
       status: res.statusCode,
-      body: typeof body === "string" ? body : JSON.stringify(body),
+      body: typeof maskedBody === "string" ? maskedBody : JSON.stringify(maskedBody),
       duration: `${duration}ms`,
     };
     logger.info("Response sent", responseLog);

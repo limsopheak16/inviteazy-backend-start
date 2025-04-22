@@ -34,10 +34,11 @@ connectMongoDB();
 // const pgPool = connectPostgresDb();
 
 // Repositories
-const userRepository = new MongoUserRepository();
-const eventRepository = new MongoEventRepository();
-// const userRepository = new PostgresUserRepository(pgPool);
-// const inviteRepository = new PostgresInviteRepository(pgPool);
+
+// const userRepository = new MongoUserRepository();
+// const eventRepository = new MongoEventRepository();
+const userRepository = new PostgresUserRepository(pgPool);
+const inviteRepository = new PostgresInviteRepository(pgPool);
 
 // Services
 const userService = new UserService(userRepository);
