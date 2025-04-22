@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 
 export interface Event extends Document {
+  userId: string;
   _id: string;
   name: string;
   dateTime: Date;
@@ -11,6 +12,7 @@ export interface Event extends Document {
 
 const eventSchema: Schema = new Schema(
   {
+    userId: { type: String, required: true },
     _id: { type: String, default: uuidv4 },
     name: { type: String, required: true },
     dateTime: { type: Date, required: true },

@@ -3,15 +3,17 @@ import {
   Event,
   EventRepository,
 } from "../../interfaces/eventsInterface";
+
 export class MongoEventRepository implements EventRepository {
   async findAll(): Promise<Event[]> {
     const events = await EventModel.find();
-    return events.map(({ _id, name, dateTime, location, description }) => ({
+    return events.map(({ _id, name, dateTime, location, description, userId }) => ({
       _id,
       name,
       dateTime,
       location,
       description,
+      userId
     }));
   }
 
@@ -24,6 +26,7 @@ export class MongoEventRepository implements EventRepository {
       dateTime: event.dateTime,
       location: event.location,
       description: event.description,
+      userId: event.userId, // ✅ Add this line
     };
   }
 
@@ -36,6 +39,7 @@ export class MongoEventRepository implements EventRepository {
       dateTime: newEvent.dateTime,
       location: newEvent.location,
       description: newEvent.description,
+      userId: newEvent.userId, // ✅ Add this line
     };
   }
 }
