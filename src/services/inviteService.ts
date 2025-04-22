@@ -30,6 +30,12 @@ export class inviteService implements InviteService{
         }
         return user;
       }
+    async getAllInvites(): Promise<Invite[] | null> {
+        return this.inviteRepository.getAllInvites();
+    }
+    async updateInvitestatus(id: string, status: string): Promise<Invite | null> {
+        return this.inviteRepository.updateInvitestatus(id, status);
+    }
     // async updateInvite(id: string, invite: Partial<Invite>): Promise<Invite | null> {
     //     return this.inviteRepository.update(id, invite);
     // }

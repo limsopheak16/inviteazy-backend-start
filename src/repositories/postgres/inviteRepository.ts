@@ -49,29 +49,24 @@ export class PostgresInviteRepository implements InviteRepository {
     }
   }
   
-
-  async update(id: string, invite: Partial<Invite>): Promise<Invite | null> {
-    const fields = [];
-    const values = [];
-    let index = 1;
-
-    for (const key in invite) {
-      fields.push(`${key} = $${index}`);
-      values.push((invite as any)[key]);
-      index++;
+  async updateInvitestatus(id: string, status:string): Promise<Invite | null> {
+    // const { status } = invite; // Extract the status field from the invite object
+  
+    if (!status) {
+      throw new Error("Only the 'status' field can be updated using this method.");
     }
-
-    const query = `UPDATE public.invitation SET ${fields.join(", ")} WHERE id = $${index} RETURNING id, event_id, user_id, status, qr_code`;
-    values.push(id);
-
-    return queryWithLogging(this.pool, query, values).then((result) => result.rows[0] || null);
-  }
-
-  async delete(id: string): Promise<void> {
+  
     return queryWithLogging(
       this.pool,
-      "DELETE FROM public.invitation WHERE id = $1",
-      [id]
-    ).then(() => {});
+      "UPDATE public.invitation SET status = $1 WHERE id = $2 RETURNING id, event_id, user_id, status, qr_code",
+      [status, id]
+    ).then((result) => result.rows[0] || null);
+  }
+
+  async getAllInvites(): Promise<Invite[] | null> {
+    return queryWithLogging(
+      this.pool,
+      "SELECT id, event_id, user_id, status, qr_code FROM public.invitation"
+    ).then((result) => result.rows || null);
   }
 }
