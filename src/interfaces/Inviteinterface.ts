@@ -4,6 +4,8 @@ export interface Invite {
     user_id: string;
     status: "pending" | "accepted" | "rejected";
     qr_code: string;
+    is_checked_in: boolean;
+    check_in_time: Date | null;
   }
 
   export interface InviteRepository {
