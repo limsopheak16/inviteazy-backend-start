@@ -27,11 +27,11 @@ export class EventController {
       console.log("📅 Creating Event:", { name, dateTime, location, description });
 
       const newEvent = await this.eventService.createEvent({
-        userId: req.userId,
         name,
         dateTime,
         location,
         description,
+        userId: req.userId,
       });
 
       res.status(201).json({
