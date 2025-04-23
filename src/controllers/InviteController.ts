@@ -77,6 +77,8 @@ export class InviteController{
             user_id: req.userId,
             status: "pending",
             qr_code,
+            is_checked_in: false,
+            check_in_time: null,
           })
           res
           .status(201)

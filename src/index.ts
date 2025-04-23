@@ -63,7 +63,7 @@ app.use(loggingMiddleware);
 // Routes
 app.use("/api/users", userRoutes(userController));
 app.use("/api/auth", authRoutes(authController));
-// app.use("/api/invites", inviteRoutes(inviteController));
+app.use("/api/v1", inviteRoutes(inviteController));//inviteRoutes
 app.use("/api/events", EventsRoutes(eventController));
 
 // Handle Errors
