@@ -29,9 +29,6 @@ export class CheckinController {
     next: NextFunction
   ){
     try {
-    //   const { event_id,in } = req.params;
-    //   console.log("event_id:", event_id);
-    //   console.log("req.userId", req.userId);
 
       const { invite_id,event_id } = req.body;
       if (!invite_id||!event_id) {
@@ -39,12 +36,23 @@ export class CheckinController {
       }
 
       // Check if the invite exists
-    //   const invite: Invite | null = await this.inviteService.getInviteById(
-    //     invite_id
-    //   );
-    //   if (!invite) {
-    //     throw new Error("Invite not found.");
-    //   }
+      const invite: Invite | null = await this.inviteService.findById(
+        invite_id
+      );
+      if (!invite) {
+        throw new Error("Invite not found.");
+      }
+
+      if(`${invite.event_id}` !== `${event_id}`){
+        throw new Error("Event ID does not match the invite.");
+      }else{
+        const updateInviteStatus = await this.inviteService.updateCheckinStatus(
+          invite_id,
+        );
+        if (!updateInviteStatus) {
+          throw new Error("Failed to update invite status.");
+        }
+      }
 
       const result = await this.checkinService.createCheckin({
         event_id,

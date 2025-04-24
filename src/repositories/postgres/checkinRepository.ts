@@ -11,7 +11,9 @@ export class PostgresCheckinRepository implements CheckinRepository {
     async create(checkin: Omit<Checkin, "id">): Promise<Checkin> {
         return queryWithLogging(
             this.pool,
-            `INSERT INTO public.checkin (event_id, invite_id) VALUES ($1, $2) RETURNING id, event_id, invite_id`,
+            `INSERT INTO public.checkin (event_id, invite_id) 
+VALUES ($1,$2) 
+RETURNING id, event_id, invite_id;`,
             [checkin.event_id, checkin.invite_id]
         ).then((result) => {
             if (result.rows.length === 0) {
