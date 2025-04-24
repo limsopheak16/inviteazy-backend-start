@@ -22,6 +22,8 @@ import { EventServiceImpl } from "./services/eventsService";
 import { EventController } from "./controllers/eventsController";
 import { MongoEventRepository } from "./repositories/mongodb/eventsRepository"; // Ensure this file exists at the specified path
 import EventsRoutes from "./routes/eventsRoute";
+import {MongoInviteRepository} from "./repositories/mongodb/inviteRespository";
+
 
 
 dotenv.config();
@@ -35,13 +37,15 @@ connectMongoDB();
 
 // Repositories
 
-// const userRepository = new MongoUserRepository();
-// const eventRepository = new MongoEventRepository();
-const userRepository = new PostgresUserRepository(pgPool);
-const inviteRepository = new PostgresInviteRepository(pgPool);
+const userRepository = new MongoUserRepository();
+const eventRepository = new MongoEventRepository();
+const inviteRepository = new MongoInviteRepository();
+// const userRepository = new PostgresUserRepository(pgPool);
+// const inviteRepository = new PostgresInviteRepository(pgPool);
 
 // Services
 const userService = new UserService(userRepository);
+const InviteService = new inviteService(inviteRepository, userRepository);
 // const innviteService = new inviteService(inviteRepository, userRepository);
 // const InviteService = new inviteService(inviteRepository);
 
@@ -53,6 +57,7 @@ const authController = new AuthController(userService);
 
 const eventService = new EventServiceImpl(eventRepository);
 const eventController = new EventController(eventService);
+const inviteController = new InviteController(InviteService, userService)
 
 // Middlewares
 app.use(express.json());
@@ -61,7 +66,7 @@ app.use(loggingMiddleware);
 // Routes
 app.use("/api/users", userRoutes(userController));
 app.use("/api/auth", authRoutes(authController));
-// app.use("/api/invites", inviteRoutes(inviteController));
+app.use("/api/v1", inviteRoutes(inviteController));
 app.use("/api/events", EventsRoutes(eventController));
 
 // Handle Errors
