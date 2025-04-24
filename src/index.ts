@@ -29,6 +29,12 @@ import { CheckinServiceImpl } from "./services/chekinService";
 import { PostgresCheckinRepository } from "./repositories/postgres/checkinRepository";
 
 
+// import {MongoInviteRepository} from "./repositories/mongodb/inviteRespository";
+
+
+// import { PostgresEventRepository } from "./repositories/postgres/eventsRepository";
+
+
 dotenv.config();
 console.log(process.env.MONGO_URI);
 const app = express();
@@ -39,6 +45,16 @@ const port = 3000;
 const pgPool = connectPostgresDb();
 
 // Repositories
+
+
+
+const inviteRepository = new MongoInviteRepository();
+// const userRepository = new PostgresUserRepository(pgPool);
+// const inviteRepository = new PostgresInviteRepository(pgPool);
+
+// Services
+const InviteService = new inviteService(inviteRepository, userRepository);
+// const innviteService = new inviteService(inviteRepository, userRepository);
 
 // const userRepository = new MongoUserRepository()
 // const eventRepository = new MongoEventRepository();
@@ -62,6 +78,7 @@ const checkinController = new CheckinController(checkinService, innviteService);
 
 const eventService = new EventServiceImpl(eventRepository);
 const eventController = new EventController(eventService);
+const inviteController = new InviteController(InviteService, userService)
 
 // Middlewares
 app.use(express.json());
