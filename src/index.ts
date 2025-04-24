@@ -22,7 +22,11 @@ import { EventServiceImpl } from "./services/eventsService";
 import { EventController } from "./controllers/eventsController";
 import { MongoEventRepository } from "./repositories/mongodb/eventsRepository"; // Ensure this file exists at the specified path
 import EventsRoutes from "./routes/eventsRoute";
-import {MongoInviteRepository} from "./repositories/mongodb/inviteRespository";
+
+// import {MongoInviteRepository} from "./repositories/mongodb/inviteRespository";
+
+
+// import { PostgresEventRepository } from "./repositories/postgres/eventsRepository";
 
 
 
@@ -32,27 +36,36 @@ const app = express();
 const port = 3000;
 
 // Switch connection to database
-connectMongoDB();
-// const pgPool = connectPostgresDb();
+// connectMongoDB();
+const pgPool = connectPostgresDb();
 
 // Repositories
 
-const userRepository = new MongoUserRepository();
-const eventRepository = new MongoEventRepository();
+
+
 const inviteRepository = new MongoInviteRepository();
 // const userRepository = new PostgresUserRepository(pgPool);
 // const inviteRepository = new PostgresInviteRepository(pgPool);
 
 // Services
-const userService = new UserService(userRepository);
 const InviteService = new inviteService(inviteRepository, userRepository);
 // const innviteService = new inviteService(inviteRepository, userRepository);
+
+// const userRepository = new MongoUserRepository()
+// const eventRepository = new MongoEventRepository();
+const eventRepository = new PostgresEventRepository(pgPool);
+const userRepository = new PostgresUserRepository(pgPool);
+const inviteRepository = new PostgresInviteRepository(pgPool);
+
+// Services
+const userService = new UserService(userRepository);
+const innviteService = new inviteService(inviteRepository, userRepository);
 // const InviteService = new inviteService(inviteRepository);
 
 // Controllers
 const userController = new UserController(userService);
 const authController = new AuthController(userService);
-// const inviteController = new InviteController(innviteService, userService);
+const inviteController = new InviteController(innviteService, userService);
 // const inviteController = new InviteController(InviteService);
 
 const eventService = new EventServiceImpl(eventRepository);
@@ -66,7 +79,7 @@ app.use(loggingMiddleware);
 // Routes
 app.use("/api/users", userRoutes(userController));
 app.use("/api/auth", authRoutes(authController));
-app.use("/api/v1", inviteRoutes(inviteController));
+app.use("/api/v1", inviteRoutes(inviteController));//inviteRoutes
 app.use("/api/events", EventsRoutes(eventController));
 
 // Handle Errors
