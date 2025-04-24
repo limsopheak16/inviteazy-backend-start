@@ -33,8 +33,14 @@ export class inviteService implements InviteService{
     async getAllInvites(): Promise<Invite[] | null> {
         return this.inviteRepository.getAllInvites();
     }
-    async updateInvitestatus(id: string, status: string): Promise<Invite | null> {
-        return this.inviteRepository.updateInvitestatus(id, status);
+    async updateInvitestatus(id: string,status:string): Promise<Invite | null> {
+        return this.inviteRepository.updateInvitestatus(id,status);
+    }
+    async findById(id: string): Promise<Invite | null> {
+        return this.inviteRepository.findById(id);
+    }
+    async updateCheckinStatus(id: string): Promise<Invite | null> {
+        return this.inviteRepository.updateCheckinStatus(id);
     }
     // async updateInvite(id: string, invite: Partial<Invite>): Promise<Invite | null> {
     //     return this.inviteRepository.update(id, invite);

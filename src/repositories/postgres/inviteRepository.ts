@@ -63,6 +63,14 @@ export class PostgresInviteRepository implements InviteRepository {
     ).then((result) => result.rows[0] || null);
   }
 
+  async updateCheckinStatus(id: string): Promise<Invite | null> {
+    return queryWithLogging(
+      this.pool,
+      "UPDATE public.invitation SET is_checked_in = true,check_in_time = NOW() WHERE id = $1 RETURNING id, event_id, user_id, status, qr_code, is_checked_in, check_in_time",
+      [id]
+    ).then((result) => result.rows[0] || null);
+  }
+
   async getAllInvites(): Promise<Invite[] | null> {
     return queryWithLogging(
       this.pool,

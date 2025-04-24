@@ -14,6 +14,8 @@ export interface Invite {
     findinvitebyuserID(userID: any): Promise<Invite[] | null>;
     getAllInvites(): Promise<Invite[] | null>;
     updateInvitestatus(id: string, status: string): Promise<Invite | null>;
+    findById(id: string): Promise<Invite | null>;
+    updateCheckinStatus(id: string): Promise<Invite | null>;
   }
 
     export interface InviteService {
@@ -22,4 +24,6 @@ export interface Invite {
         findinvitebyuserID(userID: any): Promise<Invite[] | null>;
         getAllInvites(): Promise<Invite[] | null>;
         updateInvitestatus(id: string, status: string): Promise<Invite | null>;
+        findById(id: string): Promise<Invite | null>;
+        updateCheckinStatus(id: string): Promise<Invite | null>;
     }

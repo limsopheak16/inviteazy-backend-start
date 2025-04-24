@@ -51,6 +51,26 @@ export class InviteController{
           next(error);
         }
       }
+
+      async updateCheckinStatus(req: Request, res: Response, next: NextFunction) {
+        try {
+          const { id } = req.params; // Extract invite ID from route parameters
+          const result = await this.inviteService.updateCheckinStatus(id);
+          res.json({ message: "Update invite status.", data: result });
+        } catch (error) {
+          next(error);
+        }
+      }
+
+      async findbyId(req: Request, res: Response, next: NextFunction) {
+        try {
+          const { id } = req.params; // Extract invite ID from route parameters
+          const result = await this.inviteService.findById(id);
+          res.json({ message: "Get invite by Id", data: result });
+        } catch (error) {
+          next(error);
+        }
+      }
     // async getInviteById(req: Request, res: Response, next: NextFunction) {
     //     try {
     //       const { id } = req.params;
