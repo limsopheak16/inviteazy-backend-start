@@ -22,7 +22,12 @@ import { EventServiceImpl } from "./services/eventsService";
 import { EventController } from "./controllers/eventsController";
 import { MongoEventRepository } from "./repositories/mongodb/eventsRepository"; // Ensure this file exists at the specified path
 import EventsRoutes from "./routes/eventsRoute";
-import { PostgresEventRepository } from "./repositories/postgres/eventsRepository";
+
+// import {MongoInviteRepository} from "./repositories/mongodb/inviteRespository";
+
+
+// import { PostgresEventRepository } from "./repositories/postgres/eventsRepository";
+
 
 
 dotenv.config();
@@ -35,6 +40,16 @@ const port = 3000;
 const pgPool = connectPostgresDb();
 
 // Repositories
+
+
+
+const inviteRepository = new MongoInviteRepository();
+// const userRepository = new PostgresUserRepository(pgPool);
+// const inviteRepository = new PostgresInviteRepository(pgPool);
+
+// Services
+const InviteService = new inviteService(inviteRepository, userRepository);
+// const innviteService = new inviteService(inviteRepository, userRepository);
 
 // const userRepository = new MongoUserRepository()
 // const eventRepository = new MongoEventRepository();
@@ -55,6 +70,7 @@ const inviteController = new InviteController(innviteService, userService);
 
 const eventService = new EventServiceImpl(eventRepository);
 const eventController = new EventController(eventService);
+const inviteController = new InviteController(InviteService, userService)
 
 // Middlewares
 app.use(express.json());
