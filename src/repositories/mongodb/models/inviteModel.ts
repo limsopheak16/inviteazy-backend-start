@@ -10,6 +10,7 @@ export interface Invite extends Document {
   qr_code?: string;
   is_checked_in?: boolean;
   check_in_time?: Date | null;
+  contribution?: any | null;
 }
 
 // Mongoose Schema using snake_case fields

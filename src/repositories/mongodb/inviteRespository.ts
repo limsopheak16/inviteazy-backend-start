@@ -49,16 +49,18 @@
 //     return invites.map(this.toInvite);
 //   }
 
-//   // Helper to convert Mongoose doc to domain model
-//   private toInvite(doc: any): Invite {
-//     return {
-//       id: doc._id.toString(),
-//       event_id: doc.event_id,
-//       user_id: doc.user_id,
-//       status: doc.status,
-//       qr_code: doc.qr_code,
-//       is_checked_in: doc.is_checked_in,
-//       check_in_time: doc.check_in_time,
-//     };
-//   }
-// }
+  // Helper to convert Mongoose doc to domain model
+  private toInvite(doc: any): Invite {
+    return {
+      id: doc._id.toString(),
+      event_id: doc.event_id,
+      user_id: doc.user_id,
+      status: doc.status,
+      qr_code: doc.qr_code,
+      is_checked_in: doc.is_checked_in,
+      check_in_time: doc.check_in_time,
+      contribution: doc.contribution,
+    };
+  }
+}
+
