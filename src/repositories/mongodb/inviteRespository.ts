@@ -59,6 +59,7 @@ export class MongoInviteRepository implements InviteRepository {
       qr_code: doc.qr_code,
       is_checked_in: doc.is_checked_in,
       check_in_time: doc.check_in_time,
+      contribution: doc.contribution,
     };
   }
 }

@@ -6,6 +6,7 @@ export interface Invite {
     qr_code: string;
     is_checked_in: boolean;
     check_in_time: Date | null;
+    contribution: any | null;
   }
 
   export interface InviteRepository {
