@@ -89,32 +89,111 @@ export class InviteController {
   //       next(error);
   //     }
   //   }
-  async createInvite(req: AuthRequest, res: Response, next: NextFunction) {
-    try {
-      const { event_id } = req.params;
-      console.log("event_id:", event_id);
-      console.log("req.userId", req.userId);
-      // const { qr_code }: Omit<Invite, "id"> = req.body;
-      const qr_code = uuidv4();
-      const result = await this.userService.getUserById(req.userId);
-      const user = await this.inviteService.findinvitebyuserID(req.userId);
-      if (
-        (user?.length ?? 0) > 50 &&
-        result.role !== "admin" &&
-        event_id == event_id
-      ) {
-        throw new Error("You have reached the maximum limit of 50 invites.");
-      } else {
-        const newInvite = await this.inviteService.createInvite({
-          event_id,
-          user_id: req.userId,
-          status: "pending",
-          qr_code,
-          is_checked_in: false,
-          check_in_time: null,
-          contribution: 0, // Default contribution value
-        });
-        res
+  
+
+      async updateCheckinStatus(req: Request, res: Response, next: NextFunction) {
+        try {
+          const { id } = req.params; // Extract invite ID from route parameters
+          const existingInvite = await this.inviteService.findById(id);
+            if (!existingInvite) {
+                throw new Error("Invite not found");
+            }
+            if (existingInvite.is_checked_in === true) {
+                throw new Error("Invite is already checked in.");
+            }
+          const result = await this.inviteService.updateCheckinStatus(id);
+          res.json({ message: "Update invite status.", data: result });
+        } catch (error) {
+          next(error);
+        }
+      }
+      async updateCheckOutStatus(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { id } = req.params; // Extract invite ID from route parameters
+            const { gift } = req.body; // Extract gift from request body
+    
+            if (!gift) {
+                throw new Error("The 'gift' field is required.");
+            }
+    
+            // Fetch the existing invite
+            const existingInvite = await this.inviteService.findById(id);
+            if (!existingInvite) {
+                throw new Error("Invite not found");
+            }
+
+            // Check if the invite is already checked out
+            if (existingInvite.is_checked_out) {
+                throw new Error("Invite is already checked out.");
+            }else if (existingInvite.is_checked_in === false) {
+                throw new Error("Invite is not checked in.");
+            }
+    
+            // Create the invite data for update, preserving existing values
+            const inviteData: Omit<Invite, "id"> = {
+                event_id: existingInvite.event_id,
+                user_id: existingInvite.user_id,
+                status: existingInvite.status,
+                qr_code: existingInvite.qr_code,
+                is_checked_in: existingInvite.is_checked_in,
+                check_in_time: existingInvite.check_in_time,
+                is_checked_out: true, // Update to indicate checked out
+                check_out_time: new Date(), // Set current time for checkout
+                gift: gift // Update with the provided gift
+            };
+    
+            // Call the service with separate arguments as per the interface
+            const result = await this.inviteService.updateCheckOutStatus(inviteData, id);
+    
+            res.json({ message: "Invite status updated.", data: result });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+      async findbyId(req: Request, res: Response, next: NextFunction) {
+        try {
+          const { id } = req.params; // Extract invite ID from route parameters
+          const result = await this.inviteService.findById(id);
+          res.json({ message: "Get invite by Id", data: result });
+        } catch (error) {
+          next(error);
+        }
+      }
+    // async getInviteById(req: Request, res: Response, next: NextFunction) {
+    //     try {
+    //       const { id } = req.params;
+    //       const result = await this.inviteService.getInviteById(id);
+    //       res.json({ message: "Get invite by Id", data: result });
+    //     } catch (error) {
+    //       next(error);
+    //     }
+    //   }
+    async createInvite(req: AuthRequest, res: Response, next: NextFunction) {
+        try {
+          const { event_id } = req.params;
+          console.log("event_id:", event_id);
+          console.log("req.userId", req.userId);
+          // const { qr_code }: Omit<Invite, "id"> = req.body;
+          const qr_code = uuidv4();
+          const result = await this.userService.getUserById(req.userId);
+          const user = await this.inviteService.findinvitebyuserID(req.userId);
+          if((user?.length ?? 0) > 50 && result.role !== "admin" && event_id == event_id){
+            throw new Error("You have reached the maximum limit of 50 invites.");
+        }else{
+          const newInvite = await this.inviteService.createInvite({
+            event_id,
+            user_id: req.userId,
+            status: "pending",
+            qr_code,
+            is_checked_in: false,
+            check_in_time: null,
+            is_checked_out: false,
+            check_out_time: null,
+            gift: null,
+          })
+          res
+
           .status(201)
           .json({
             message: "A new invite was created.",

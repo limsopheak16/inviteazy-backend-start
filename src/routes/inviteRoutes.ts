@@ -14,8 +14,8 @@ export default function inviteRoutes(
   router.get("/invitations/:id", authMiddleware, controller.findbyId.bind(controller));
   router.patch("/invitations/:id/checkin", authMiddleware, controller.updateCheckinStatus.bind(controller));
   router.get("/events/:eventId/status", authMiddleware, controller.getGuestInsight.bind(controller));
-
-  // router.delete("/:id", controller.deleteInvite.bind(controller));
+  router.patch("/invitations/:id/checkout", authMiddleware, controller.updateCheckOutStatus.bind(controller));
+  
 
   return router;
 }
