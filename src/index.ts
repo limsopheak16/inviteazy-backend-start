@@ -20,7 +20,7 @@ import { EventController } from "./controllers/eventsController";
 import { MongoEventRepository } from "./repositories/mongodb/eventsRepository"; // Ensure this file exists at the specified path
 import EventsRoutes from "./routes/eventsRoute";
 import { PostgresEventRepository } from "./repositories/postgres/eventsRepository";
-import {MongoInviteRepository} from "./repositories/mongodb/inviteRespository";
+// import {MongoInviteRepository} from "./repositories/mongodb/inviteRespository";
 
 
 dotenv.config();
