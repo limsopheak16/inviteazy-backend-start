@@ -42,6 +42,9 @@ export class inviteService implements InviteService{
     async updateCheckinStatus(id: string): Promise<Invite | null> {
         return this.inviteRepository.updateCheckinStatus(id);
     }
+    async updateCheckOutStatus(invite: Omit<Invite, 'id'>, id: string): Promise<Invite | null> {
+        return this.inviteRepository.updateCheckOutStatus(invite, id);
+    }
     // async updateInvite(id: string, invite: Partial<Invite>): Promise<Invite | null> {
     //     return this.inviteRepository.update(id, invite);
     // }
