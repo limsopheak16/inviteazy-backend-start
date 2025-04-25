@@ -7,7 +7,7 @@ export default function EventsRoutes(controller: EventController): Router {
   const router = Router();
 
   router.post("/",authMiddleware, validateEvent ,controller.createEvent.bind(controller));
-  router.get("/getAll", controller.getAllEvents.bind(controller));
+  router.get("/getAll", authMiddleware, controller.getAllEvents.bind(controller));
 
   return router;
 }

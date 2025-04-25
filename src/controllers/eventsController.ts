@@ -35,7 +35,7 @@ export class EventController {
       });
 
       res.status(201).json({
-        message: "✅ A new event was created.",
+        message: " A new event was created.",
         data: newEvent,
       });
     } catch (error) {
@@ -48,21 +48,6 @@ export class EventController {
     try {
       const result = await this.eventService.getAllEvents();
       res.json({ message: "📦 All events fetched.", data: result });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async getEventById(req: Request, res: Response, next: NextFunction) {
-    try {
-      const { id } = req.params;
-      const result = await this.eventService.getEventById(id);
-
-      if (!result) {
-        return res.status(404).json({ message: "❌ Event not found." });
-      }
-
-      res.json({ message: "📌 Event by ID", data: result });
     } catch (error) {
       next(error);
     }
