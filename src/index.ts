@@ -23,10 +23,7 @@ import { EventController } from "./controllers/eventsController";
 import { MongoEventRepository } from "./repositories/mongodb/eventsRepository"; // Ensure this file exists at the specified path
 import EventsRoutes from "./routes/eventsRoute";
 import { PostgresEventRepository } from "./repositories/postgres/eventsRepository";
-import checkinRoutes from "./routes/checkinRoutes";
-import { CheckinController } from "./controllers/checkinController";
-import { CheckinServiceImpl } from "./services/chekinService";
-import { PostgresCheckinRepository } from "./repositories/postgres/checkinRepository";
+
 
 
 dotenv.config();
@@ -45,19 +42,16 @@ const pgPool = connectPostgresDb();
 const eventRepository = new PostgresEventRepository(pgPool);
 const userRepository = new PostgresUserRepository(pgPool);
 const inviteRepository = new PostgresInviteRepository(pgPool);
-const checkinRepository = new PostgresCheckinRepository(pgPool);
 
 // Services
 const userService = new UserService(userRepository);
 const innviteService = new inviteService(inviteRepository, userRepository);
-const checkinService = new CheckinServiceImpl(checkinRepository, inviteRepository);
 // const InviteService = new inviteService(inviteRepository);
 
 // Controllers
 const userController = new UserController(userService);
 const authController = new AuthController(userService);
 const inviteController = new InviteController(innviteService, userService);
-const checkinController = new CheckinController(checkinService, innviteService);
 // const inviteController = new InviteController(InviteService);
 
 const eventService = new EventServiceImpl(eventRepository);
@@ -72,7 +66,6 @@ app.use("/api/users", userRoutes(userController));
 app.use("/api/auth", authRoutes(authController));
 app.use("/api/v1", inviteRoutes(inviteController));//inviteRoutes
 app.use("/api/events", EventsRoutes(eventController));
-app.use("/api/checkin", checkinRoutes(checkinController));
 
 // Handle Errors
 app.use(errorMiddleware);
