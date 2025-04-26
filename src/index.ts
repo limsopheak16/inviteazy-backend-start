@@ -20,6 +20,8 @@ import { EventController } from "./controllers/eventsController";
 import { MongoEventRepository } from "./repositories/mongodb/eventsRepository"; // Ensure this file exists at the specified path
 import EventsRoutes from "./routes/eventsRoute";
 import { PostgresEventRepository } from "./repositories/postgres/eventsRepository";
+import { connectMysqlDb } from "./config/mysql/db";
+import { MySQLUserRepository } from "./repositories/mysql/userRepository";
 // import {MongoInviteRepository} from "./repositories/mongodb/inviteRespository";
 
 
@@ -28,46 +30,46 @@ console.log(process.env.MONGO_URI);
 const app = express();
 const port = 3000;
 
-// Switch connection to database
-const pgPool = connectPostgresDb();
+// // Switch connection to database
+// const pgPool = connectPostgresDb();
 
-// Repositories
+// // Repositories
 
-const eventRepository = new PostgresEventRepository(pgPool);
-const userRepository = new PostgresUserRepository(pgPool);
-const inviteRepository = new PostgresInviteRepository(pgPool);
+// const eventRepository = new PostgresEventRepository(pgPool);
+// const userRepository = new PostgresUserRepository(pgPool);
+// const inviteRepository = new PostgresInviteRepository(pgPool);
 
-// Services
+// // Services
 
-const userService = new UserService(userRepository);
-const innviteService = new inviteService(inviteRepository, userRepository);
-const eventService = new EventServiceImpl(eventRepository);
+// const userService = new UserService(userRepository);
+// const innviteService = new inviteService(inviteRepository, userRepository);
+// const eventService = new EventServiceImpl(eventRepository);
 
-// Controllers
-const userController = new UserController(userService);
-const authController = new AuthController(userService);
-const inviteController = new InviteController(innviteService, userService);
-const eventController = new EventController(eventService);
+// // Controllers
+// const userController = new UserController(userService);
+// const authController = new AuthController(userService);
+// const inviteController = new InviteController(innviteService, userService);
+// const eventController = new EventController(eventService);
 
-// Middlewares
-app.use(express.json());
-app.use(loggingMiddleware);
+// // Middlewares
+// app.use(express.json());
+// app.use(loggingMiddleware);
 
-// Routes
-app.use("/api/users", userRoutes(userController));
-app.use("/api/auth", authRoutes(authController));
-app.use("/api/v1", inviteRoutes(inviteController));//inviteRoutes
-app.use("/api/events", EventsRoutes(eventController));
+// // Routes
+// app.use("/api/users", userRoutes(userController));
+// app.use("/api/auth", authRoutes(authController));
+// app.use("/api/v1", inviteRoutes(inviteController));//inviteRoutes
+// app.use("/api/events", EventsRoutes(eventController));
 
-// Handle Errors
-app.use(errorMiddleware);
+// // Handle Errors
+// app.use(errorMiddleware);
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
-// function connectMongoDB() {
-//   throw new Error("Function not implemented.");
-// }
+// app.listen(port, () => {
+//   console.log(`Server running at http://localhost:${port}`);
+// });
+// // function connectMongoDB() {
+// //   throw new Error("Function not implemented.");
+// // }
 
 
 // // Switch connection to database
@@ -110,3 +112,26 @@ app.listen(port, () => {
 // app.listen(port, () => {
 //   console.log(`Server running at http://localhost:${port}`);
 // });
+
+
+
+const mysqlPool = connectMysqlDb();
+
+// Repositories
+const mysqlUserRepository = new MySQLUserRepository(mysqlPool);
+
+// Services
+const mysqlUserService = new UserService(mysqlUserRepository);
+
+//controllers
+const mysqlUserController = new UserController(mysqlUserService);
+
+// Routes
+app.use("/api/users", userRoutes(mysqlUserController));
+
+// Handle Errors
+app.use(errorMiddleware);
+
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
