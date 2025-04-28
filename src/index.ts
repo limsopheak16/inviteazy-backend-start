@@ -17,12 +17,12 @@ import { MongoUserRepository } from "./repositories/mongodb/userRepository";
 import { connectMongoDB } from "./config/mongodb/db";
 import { EventServiceImpl } from "./services/eventsService";
 import { EventController } from "./controllers/eventsController";
-import { MongoEventRepository } from "./repositories/mongodb/eventsRepository"; // Ensure this file exists at the specified path
+import { MongoEventRepository } from "./repositories/mongodb/eventsRepository"; 
 import EventsRoutes from "./routes/eventsRoute";
 import { PostgresEventRepository } from "./repositories/postgres/eventsRepository";
 import { connectMysqlDb } from "./config/mysql/db";
 import { MySQLUserRepository } from "./repositories/mysql/userRepository";
-// import {MongoInviteRepository} from "./repositories/mongodb/inviteRespository";
+import {MongoInviteRepository} from "./repositories/mongodb/inviteRespository";
 
 
 dotenv.config();
@@ -75,38 +75,37 @@ const port = 3000;
 // // Switch connection to database
 // connectMongoDB();
 
+
 // Switch connection to database
 // const pgPool = connectPostgresDb();
 
 // // Repositories
 
-// const userRepository = new MongoUserRepository()
-// const eventRepository = new MongoEventRepository();
-// const inviteRepository = new MongoInviteRepository();
+// const eventRepository = new PostgresEventRepository(pgPool);
+// const userRepository = new PostgresUserRepository(pgPool);
+// const inviteRepository = new PostgresInviteRepository(pgPool);
 
 // // Services
+
 // const userService = new UserService(userRepository);
+// const innviteService = new inviteService(inviteRepository, userRepository);
 // const eventService = new EventServiceImpl(eventRepository);
-// const InviteService = new inviteService(inviteRepository, userRepository);
 
 // // Controllers
-
 // const userController = new UserController(userService);
 // const authController = new AuthController(userService);
+// const inviteController = new InviteController(innviteService, userService);
 // const eventController = new EventController(eventService);
-// const inviteController = new InviteController(InviteService, userService);
 
 // // Middlewares
-
 // app.use(express.json());
 // app.use(loggingMiddleware);
 
 // // Routes
 // app.use("/api/users", userRoutes(userController));
 // app.use("/api/auth", authRoutes(authController));
-// app.use("/api/v1", inviteRoutes(inviteController));
+// app.use("/api/v1", inviteRoutes(inviteController));//inviteRoutes
 // app.use("/api/events", EventsRoutes(eventController));
-// // app.use("/api/checkin", checkinRoutes(checkinController));
 
 // // Handle Errors
 // app.use(errorMiddleware);
@@ -169,7 +168,7 @@ const port = 3000;
 // // }
 
 
-// // Switch connection to database
+
 connectMongoDB();
 
 
@@ -177,19 +176,19 @@ connectMongoDB();
 
 const userRepository = new MongoUserRepository()
 const eventRepository = new MongoEventRepository();
-// const inviteRepository = new MongoInviteRepository();
+const inviteRepository = new MongoInviteRepository();
 
 // Services
 const userService = new UserService(userRepository);
 const eventService = new EventServiceImpl(eventRepository);
-// const InviteService = new inviteService(inviteRepository, userRepository);
+const InviteService = new inviteService(inviteRepository, userRepository);
 
 // Controllers
 
 const userController = new UserController(userService);
 const authController = new AuthController(userService);
 const eventController = new EventController(eventService);
-// const inviteController = new InviteController(InviteService, userService);
+const inviteController = new InviteController(InviteService, userService);
 
 // Middlewares
 
@@ -199,7 +198,7 @@ app.use(loggingMiddleware);
 // Routes
 app.use("/api/users", userRoutes(userController));
 app.use("/api/auth", authRoutes(authController));
-// app.use("/api/v1", inviteRoutes(inviteController));
+app.use("/api/v1", inviteRoutes(inviteController));
 app.use("/api/events", EventsRoutes(eventController));
 // app.use("/api/checkin", checkinRoutes(checkinController));
 
