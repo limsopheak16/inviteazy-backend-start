@@ -45,14 +45,14 @@ export class MongoInviteRepository implements InviteRepository {
         const checkInCount = await InviteModel.countDocuments({ event_id: eventID, is_checked_in: true });
         return checkInCount > 0 ? { check_in_count: checkInCount } : null;
     }
-    async findAllmoneyByenventID(eventID: string): Promise<{ check_in_count: number; total_gift_amount: number | null } | null> {
-        const checkInCount = await InviteModel.countDocuments({ event_id: eventID, is_checked_out: true });
+    async findAllmoneyByenventID(eventID: string): Promise<{  total_gift_amount: number | null } | null> {
+        // const checkInCount = await InviteModel.countDocuments({ event_id: eventID, is_checked_out: true });
         const totalGiftAmount = await InviteModel.aggregate([
             { $match: { event_id: eventID, is_checked_out: true } },
             { $group: { _id: null, total: { $sum: "$gift" } } }
         ]);
-        return checkInCount > 0
-            ? { check_in_count: checkInCount, total_gift_amount: totalGiftAmount[0]?.total || null }
+        return totalGiftAmount.length > 0
+            ? {  total_gift_amount: totalGiftAmount[0]?.total || null }
             : null;
     }
   async create(invite: Omit<Invite, "id">): Promise<Invite> {
