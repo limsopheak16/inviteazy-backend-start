@@ -15,15 +15,6 @@ export class EventController {
     try {
       const { name, dateTime, location, description } = req.body;
 
-      // ✅ Fix: properly access user ID from the object
-      // const {id} = req.userId;
-      // console.log('hhhhh',id)
-
-      // if (!id) {
-      //   res.status(400).json({ message: "❌ User ID missing from request." });
-      //   return;
-      // }
-
       console.log("📅 Creating Event:", { name, dateTime, location, description });
 
       const newEvent = await this.eventService.createEvent({
