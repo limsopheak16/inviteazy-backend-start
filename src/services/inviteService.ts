@@ -11,8 +11,26 @@ export class inviteService implements InviteService {
         private inviteRepository: InviteRepository,
         private userRepository: IUserRepository
     ) {}
+    async findAllcheckinByenventID(eventID: string): Promise<{ check_in_count: number } | null> {
+        return this.inviteRepository.findAllcheckinByenventID(eventID);
+    }
+
+    async findAllmoneyByenventID(eventID: string): Promise<{ total_gift_amount: number | null } | null> {
+        const result = await this.inviteRepository.findAllmoneyByenventID(eventID);
+        return result ? { ...result } : null;
+    }
 
     async getAllAcceptByenventID(eventId: string): Promise<Invite[] | null> {
+        return this.inviteRepository.findAllAcceptByenventID(eventId);
+    }
+    async getAllcheckinByenventID(eventId: string): Promise<{ check_in_count: number } | null> {
+        return this.inviteRepository.findAllcheckinByenventID(eventId);
+    }
+    async getAllmoneyByenventID(eventId: string): Promise<{total_gift_amount: number | null } | null> {
+        const result = await this.inviteRepository.findAllmoneyByenventID(eventId);
+        return result ? {...result } : null;
+    }
+    async findAllAcceptByenventID(eventId: string): Promise<Invite[] | null> {
         return this.inviteRepository.findAllAcceptByenventID(eventId);
     }
 

@@ -16,6 +16,26 @@ export class PostgresInviteRepository implements InviteRepository {
       ["accepted", eventID]
     ).then((result) => result.rows || null);
   }
+  async findAllcheckinByenventID(eventID: string): Promise<{ check_in_count: number } | null> {
+    return queryWithLogging(
+      this.pool,
+      `SELECT COUNT(*) 
+FROM public.invitation
+WHERE event_id = $1
+  AND is_checked_in = true;`,
+      [eventID]
+    ).then((result) => result.rows[0] || null);
+  }
+  async findAllmoneyByenventID(eventID: string): Promise<{total_gift_amount: number | null } | null> {
+    return queryWithLogging(
+      this.pool,
+      `SELECT
+  SUM(gift)
+FROM public.invitation
+WHERE event_id = $1;`,
+      [eventID]
+    ).then((result) => result.rows[0] || null);
+  }
 
   async findById(id: string): Promise<Invite | null> {
     return queryWithLogging(

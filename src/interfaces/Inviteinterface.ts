@@ -8,12 +8,14 @@ export interface Invite {
     check_in_time?: Date | null;
     is_checked_out?: boolean;
     check_out_time?: Date | null;
-    gift?: any | null;
+    gift?: number | null;
 
   }
 
   export interface InviteRepository {
     findAllAcceptByenventID(id: string): Promise<Invite[] | null>;
+    findAllcheckinByenventID(eventID: string): Promise<{ check_in_count: number } | null>;
+    findAllmoneyByenventID(eventID: string): Promise<{total_gift_amount: number | null } | null>;
     create(invite: Omit<Invite, "id">): Promise<Invite>;
     findinvitebyuserID(userID: any): Promise<Invite[] | null>;
     getAllInvites(): Promise<Invite[] | null>;
@@ -24,6 +26,9 @@ export interface Invite {
   }
 
     export interface InviteService {
+        findAllAcceptByenventID(id: string): Promise<Invite[] | null>;
+        findAllcheckinByenventID(eventID: string): Promise<{ check_in_count: number } | null>;
+        findAllmoneyByenventID(eventID: string): Promise<{total_gift_amount: number | null } | null>;
         getAllAcceptByenventID(id: string): Promise<Invite[] | null>;
         createInvite(invite: Omit<Invite, "id">): Promise<Invite>;
         findinvitebyuserID(userID: any): Promise<Invite[] | null>;

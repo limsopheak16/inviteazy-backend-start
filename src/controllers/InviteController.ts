@@ -163,12 +163,14 @@ export class InviteController {
     try {
       const { eventId } = req.params;
       const acceptedInvites = await this.inviteService.getAllAcceptByenventID(eventId);
+      const totalCheckedIn = await this.inviteService.findAllcheckinByenventID(eventId);
+      const totalContribution = await this.inviteService.findAllmoneyByenventID(eventId);
   
       const totalAccepted = acceptedInvites ? acceptedInvites.length : 0;
-      const totalCheckedIn = acceptedInvites ? acceptedInvites.filter((invite) => invite.is_checked_in).length : 0;
-      const totalContribution = acceptedInvites
-        ? acceptedInvites.reduce((sum, invite) => sum + (Number(invite.gift) || 0), 0)
-        : 0;
+      // const totalCheckedIn = acceptedInvites ? acceptedInvites.filter((invite) => invite.is_checked_in).length : 0;
+      // const totalContribution = acceptedInvites
+      //   ? acceptedInvites.reduce((sum, invite) => sum + (Number(invite.gift) || 0), 0)
+      //   : 0;
   
       res.json({
         message: "Guest Insight fetched successfully.",
