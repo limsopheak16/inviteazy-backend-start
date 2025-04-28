@@ -1,7 +1,5 @@
 import express, { Request } from "express";
 
-const sensitiveFields = ["username", "password", "email", "token"];
-
 export function sanitizeRequestData(req: Request): Record<string, any> {
   const safeData: Record<string, any> = {
     method: req.method,
@@ -11,11 +9,12 @@ export function sanitizeRequestData(req: Request): Record<string, any> {
   };
 
   if (req.body && Object.keys(req.body).length > 0) {
-    const { username, password, email, ...safeBody } = req.body;
-    safeData.body = safeBody;
-    sensitiveFields.forEach((field) => {
-      if (req.body[field]) safeData.body[field] = "[MASKED]";
-    });
+    // Mask all fields in the request body
+    const maskedBody: Record<string, any> = {};
+    for (const key in req.body) {
+      maskedBody[key] = "[MASKED]";
+    }
+    safeData.body = maskedBody;
   }
 
   if (req.cookies && req.cookies.sessionId) {
