@@ -31,45 +31,45 @@ const app = express();
 const port = 3000;
 
 // // // Switch connection to database
-// const pgPool = connectPostgresDb();
+const pgPool = connectPostgresDb();
 
-// // Repositories
+// Repositories
 
-// const eventRepository = new PostgresEventRepository(pgPool);
-// const userRepository = new PostgresUserRepository(pgPool);
-// const inviteRepository = new PostgresInviteRepository(pgPool);
+const eventRepository = new PostgresEventRepository(pgPool);
+const userRepository = new PostgresUserRepository(pgPool);
+const inviteRepository = new PostgresInviteRepository(pgPool);
 
-// // Services
+// Services
 
-// const userService = new UserService(userRepository);
-// const innviteService = new inviteService(inviteRepository, userRepository);
-// const eventService = new EventServiceImpl(eventRepository);
+const userService = new UserService(userRepository);
+const innviteService = new inviteService(inviteRepository, userRepository);
+const eventService = new EventServiceImpl(eventRepository);
 
-// // Controllers
-// const userController = new UserController(userService);
-// const authController = new AuthController(userService);
-// const inviteController = new InviteController(innviteService, userService);
-// const eventController = new EventController(eventService);
+// Controllers
+const userController = new UserController(userService);
+const authController = new AuthController(userService);
+const inviteController = new InviteController(innviteService, userService);
+const eventController = new EventController(eventService);
 
-// // Middlewares
-// app.use(express.json());
-// app.use(loggingMiddleware);
+// Middlewares
+app.use(express.json());
+app.use(loggingMiddleware);
 
-// // Routes
-// app.use("/api/users", userRoutes(userController));
-// app.use("/api/auth", authRoutes(authController));
-// app.use("/api/v1", inviteRoutes(inviteController));//inviteRoutes
-// app.use("/api/events", EventsRoutes(eventController));
+// Routes
+app.use("/api/users", userRoutes(userController));
+app.use("/api/auth", authRoutes(authController));
+app.use("/api/v1", inviteRoutes(inviteController));//inviteRoutes
+app.use("/api/events", EventsRoutes(eventController));
 
-// // Handle Errors
-// app.use(errorMiddleware);
+// Handle Errors
+app.use(errorMiddleware);
 
-// app.listen(port, () => {
-//   console.log(`Server running at http://localhost:${port}`);
-// });
-// // // function connectMongoDB() {
-// // //   throw new Error("Function not implemented.");
-// // // }
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
+// // function connectMongoDB() {
+// //   throw new Error("Function not implemented.");
+// // }
 
 
 
@@ -88,42 +88,42 @@ const port = 3000;
 
 
 
-connectMongoDB();
+// connectMongoDB();
 
 
 // Repositories
 
-const userRepository = new MongoUserRepository()
-const eventRepository = new MongoEventRepository();
-const inviteRepository = new MongoInviteRepository();
+// const userRepository = new MongoUserRepository()
+// const eventRepository = new MongoEventRepository();
+// const inviteRepository = new MongoInviteRepository();
 
-// Services
-const userService = new UserService(userRepository);
-const eventService = new EventServiceImpl(eventRepository);
-const InviteService = new inviteService(inviteRepository, userRepository);
+// // Services
+// const userService = new UserService(userRepository);
+// const eventService = new EventServiceImpl(eventRepository);
+// const InviteService = new inviteService(inviteRepository, userRepository);
 
-// Controllers
+// // Controllers
 
-const userController = new UserController(userService);
-const authController = new AuthController(userService);
-const eventController = new EventController(eventService);
-const inviteController = new InviteController(InviteService, userService);
+// const userController = new UserController(userService);
+// const authController = new AuthController(userService);
+// const eventController = new EventController(eventService);
+// const inviteController = new InviteController(InviteService, userService);
 
-// Middlewares
+// // Middlewares
 
-app.use(express.json());
-app.use(loggingMiddleware);
+// app.use(express.json());
+// app.use(loggingMiddleware);
 
-// Routes
-app.use("/api/users", userRoutes(userController));
-app.use("/api/auth", authRoutes(authController));
-app.use("/api/v1", inviteRoutes(inviteController));
-app.use("/api/events", EventsRoutes(eventController));
-// app.use("/api/checkin", checkinRoutes(checkinController));
+// // Routes
+// app.use("/api/users", userRoutes(userController));
+// app.use("/api/auth", authRoutes(authController));
+// app.use("/api/v1", inviteRoutes(inviteController));
+// app.use("/api/events", EventsRoutes(eventController));
+// // app.use("/api/checkin", checkinRoutes(checkinController));
 
-// Handle Errors
-app.use(errorMiddleware);
+// // Handle Errors
+// app.use(errorMiddleware);
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`Server running at http://localhost:${port}`);
+// });
