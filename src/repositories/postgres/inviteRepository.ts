@@ -12,7 +12,7 @@ export class PostgresInviteRepository implements InviteRepository {
   async findAllAcceptByenventID(eventID: string): Promise<Invite[] | null> {
     return queryWithLogging(
       this.pool,
-      "SELECT id, event_id, user_id, status, qr_code, is_checked_in, check_in_time FROM public.invitation WHERE status = $1 AND event_id = $2;",
+      "SELECT id, event_id, user_id, status, qr_code, is_checked_in, check_in_time, create_at,is_checked_out,checked_out_time,gift FROM public.invitation WHERE status = $1 AND event_id = $2;",
       ["accepted", eventID]
     ).then((result) => result.rows || null);
   }
@@ -20,7 +20,7 @@ export class PostgresInviteRepository implements InviteRepository {
   async findById(id: string): Promise<Invite | null> {
     return queryWithLogging(
       this.pool,
-      "SELECT id, event_id, user_id, status, qr_code, is_checked_in, check_in_time FROM public.invitation WHERE id = $1",
+      "SELECT id, event_id, user_id, status, qr_code, is_checked_in, check_in_time, create_at,is_checked_out,checked_out_time,gift FROM public.invitation WHERE id = $1",
       [id]
     ).then((result) => result.rows[0] || null);
   }
@@ -29,7 +29,7 @@ export class PostgresInviteRepository implements InviteRepository {
   ): Promise<Invite[] | null> {
     return queryWithLogging(
       this.pool,
-      "SELECT id, event_id, user_id, status, qr_code, is_checked_in, check_in_time FROM public.invitation WHERE user_id = $1",
+      "SELECT id, event_id, user_id, status, qr_code, is_checked_in, check_in_time, create_at,is_checked_out,checked_out_time,gift FROM public.invitation WHERE user_id = $1",
       [userID]
     ).then((result) => result.rows || null);
   }
@@ -38,8 +38,8 @@ export class PostgresInviteRepository implements InviteRepository {
     const client = await this.pool.connect();
     try {
       const insertRes = await client.query(
-        `INSERT INTO public.invitation (event_id, user_id, status, qr_code, is_checked_in, check_in_time) VALUES ($1, $2, $3, $4, $5,$6) RETURNING id, event_id, user_id, status, qr_code, is_checked_in, check_in_time`,
-        [invite.event_id, invite.user_id, invite.status, invite.qr_code,invite.is_checked_in, invite.check_in_time]
+        `INSERT INTO public.invitation (event_id, user_id, status, qr_code, is_checked_in, check_in_time,is_checked_out,checked_out_time,gift) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id, event_id, user_id, status, qr_code, is_checked_in, check_in_time, create_at, is_checked_out, checked_out_time, gift`,
+        [invite.event_id, invite.user_id, invite.status, invite.qr_code,invite.is_checked_in, invite.check_in_time, invite.is_checked_out, invite.check_out_time, invite.gift]
       );
       return insertRes.rows[0];
     } catch (err) {
@@ -58,7 +58,7 @@ export class PostgresInviteRepository implements InviteRepository {
   
     return queryWithLogging(
       this.pool,
-      "UPDATE public.invitation SET status = $1 WHERE id = $2 RETURNING id, event_id, user_id, status, qr_code, is_checked_in, check_in_time",
+      "UPDATE public.invitation SET status = $1 WHERE id = $2 RETURNING id, event_id, user_id, status, qr_code, is_checked_in, check_in_time,create_at,is_checked_out, checked_out_time,gift",
       [status, id]
     ).then((result) => result.rows[0] || null);
   }
@@ -66,15 +66,22 @@ export class PostgresInviteRepository implements InviteRepository {
   async updateCheckinStatus(id: string): Promise<Invite | null> {
     return queryWithLogging(
       this.pool,
-      "UPDATE public.invitation SET is_checked_in = true,check_in_time = NOW() WHERE id = $1 RETURNING id, event_id, user_id, status, qr_code, is_checked_in, check_in_time",
+      "UPDATE public.invitation SET is_checked_in = true,check_in_time = NOW() WHERE id = $1 RETURNING id, event_id, user_id, status, qr_code, is_checked_in, check_in_time,create_at,is_checked_out, checked_out_time,gift",
       [id]
+    ).then((result) => result.rows[0] || null);
+  }
+  async updateCheckOutStatus(invite: Omit<Invite,"id"> ,id: string): Promise<Invite | null> {
+    return queryWithLogging(
+      this.pool,
+      "UPDATE public.invitation SET gift = $1, is_checked_out = true,checked_out_time = NOW() WHERE id = $2 RETURNING id, event_id, user_id, status, qr_code, is_checked_in, check_in_time,create_at,is_checked_out, checked_out_time,gift",
+      [invite.gift,id]
     ).then((result) => result.rows[0] || null);
   }
 
   async getAllInvites(): Promise<Invite[] | null> {
     return queryWithLogging(
       this.pool,
-      "SELECT id, event_id, user_id, status, qr_code, is_checked_in, check_in_time FROM public.invitation"
+      "SELECT id, event_id, user_id, status, qr_code, is_checked_in, check_in_time,create_at, is_checked_out,checked_out_time,gift FROM public.invitation"
     ).then((result) => result.rows || null);
   }
 }

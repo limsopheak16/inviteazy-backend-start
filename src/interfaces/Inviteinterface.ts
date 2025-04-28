@@ -6,6 +6,9 @@ export interface Invite {
     qr_code: string;
     is_checked_in: boolean;
     check_in_time: Date | null;
+    is_checked_out: boolean;
+    check_out_time: Date | null;
+    gift: any | null;
   }
 
   export interface InviteRepository {
@@ -16,6 +19,7 @@ export interface Invite {
     updateInvitestatus(id: string, status: string): Promise<Invite | null>;
     findById(id: string): Promise<Invite | null>;
     updateCheckinStatus(id: string): Promise<Invite | null>;
+    updateCheckOutStatus(invite: Omit<Invite, "id">,id: string): Promise<Invite | null>;
   }
 
     export interface InviteService {
@@ -26,4 +30,5 @@ export interface Invite {
         updateInvitestatus(id: string, status: string): Promise<Invite | null>;
         findById(id: string): Promise<Invite | null>;
         updateCheckinStatus(id: string): Promise<Invite | null>;
+        updateCheckOutStatus(invite: Omit<Invite, "id">,id: string): Promise<Invite | null>;
     }
